@@ -5,6 +5,7 @@ import seaborn as sns
 import pandas as pd
 import time
 import os
+import pickle
 
 # =============================================================================
 # 1. Loss Functions and Derivatives (Unified Structure)
@@ -732,6 +733,7 @@ if __name__ == "__main__":
     np.random.seed(42)
 
     plot_save_dir = './plots'
+    pickle_save_dir = './pickle_files'
 
     data_file = 'YearPredictionMSD_10k.csv'
     df_10k = pd.read_csv(data_file)
@@ -766,6 +768,10 @@ if __name__ == "__main__":
     plot_results(results_huber, opt_val_huber, title=config_huber['name'], save_dir=plot_save_dir)
     print("-" * 60)
 
+    save_path = os.path.join(pickle_save_dir, "huber.pkl")
+    with open(save_path, "wb") as f:
+        pickle.dump(results_huber, f)
+
 
     # --- Configuration 2: Pseudo-Huber Varying Sketch Size ---
     config_huber_vary_m = config_huber.copy()
@@ -779,6 +785,10 @@ if __name__ == "__main__":
     print(f"\nTotal time for {config_huber_vary_m['name']}: {time.time()-start_exp_time:.2f}s")
     plot_results(results_vary_m, opt_val_vary_m, title=config_huber_vary_m['name'], save_dir=plot_save_dir)
     print("-" * 60)
+
+    save_path = os.path.join(pickle_save_dir, "varying_sketch_size.pkl")
+    with open(save_path, "wb") as f:
+        pickle.dump(results_vary_m, f)
 
     # --- Configuration 3: Logistic Regression (Standard Suite) ---
     config_logistic = {
@@ -801,6 +811,10 @@ if __name__ == "__main__":
     print(f"\nTotal time for {config_logistic['name']}: {time.time()-start_exp_time:.2f}s")
     plot_results(results_logistic, opt_val_logistic, title=config_logistic['name'], save_dir=plot_save_dir)
     print("-" * 60)
+
+    save_path = os.path.join(pickle_save_dir, "logistic.pkl")
+    with open(save_path, "wb") as f:
+        pickle.dump(results_logistic, f)
 
     # --- Configuration 4: YearPredictionMSD Dataset with Pseudo-Huber Loss ---
 
@@ -829,5 +843,10 @@ if __name__ == "__main__":
         print(f"\nTotal time for {config_msd_huber['name']}: {time.time()-start_exp_time:.2f}s")
         plot_results(results_msd_huber, opt_val_msd_huber, title=config_msd_huber['name'], save_dir=plot_save_dir)
         print("-" * 60)
+
+        save_path = os.path.join(pickle_save_dir, "msd_huber.pkl")
+        with open(save_path, "wb") as f:
+            pickle.dump(results_msd_huber, f)
+
     else:
         print("\nSkipping YearPredictionMSD experiment because the data failed to load.")
